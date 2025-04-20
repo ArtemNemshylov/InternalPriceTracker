@@ -11,7 +11,7 @@ class BaseParser(ABC):
         self.urls = urls
 
     @abstractmethod
-    async def fetch_page(self, url: str) -> str:
+    async def fetch_page(self, url: str) -> str:  #  TODO move to BaseBrowser class
         pass
 
     @abstractmethod
