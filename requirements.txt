@@ -1,1 +1,2 @@
-loguru
+loguru==3.4.0
+pre_commit==4.2.0
