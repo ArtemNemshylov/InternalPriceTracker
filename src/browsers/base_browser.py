@@ -7,9 +7,5 @@ class BaseBrowser(ABC):
         pass
 
     @abstractmethod
-    async def fetch_json(self, url: str) -> dict:
-        pass
-
-    @abstractmethod
-    async def close(self):
+    async def fetch_json(self, url: str, selector: str = "pre") -> dict:
         pass
