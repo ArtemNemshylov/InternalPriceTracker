@@ -16,3 +16,9 @@ class BrowserPool:
 
     async def release(self, browser, browser_type: str):
         await self._pools[browser_type].put(browser)
+
+    async def shutdown(self):
+        for pool in self._pools.values():
+            while not pool.empty():
+                browser = await pool.get()
+                await browser.close()
