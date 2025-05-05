@@ -16,17 +16,19 @@ def handle_parsing_errors(func):
             raise
     return wrapper
 
+# src/parsers/base_parser.py
 class BaseParser(ABC):
     def __init__(
         self,
         browser_type: str = "playwright",
         request_timeout: int = 30,
         headers: Optional[Dict[str, str]] = None,
+        browser_config: Optional[Dict[str, Dict[str, Any]]] = None
     ):
         self.browser_type = browser_type
         self.request_timeout = request_timeout
         self.headers = headers or {}
-        self.browser_pool = BrowserPool()
+        self.browser_pool = BrowserPool(browser_config=browser_config or {})
 
     @abstractmethod
     @handle_parsing_errors

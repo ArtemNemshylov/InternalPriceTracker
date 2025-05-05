@@ -1,16 +1,22 @@
 import asyncio
+from typing import Optional, Dict, Any
+
 from .factory import BrowserFactory
 
 class BrowserPool:
-    def __init__(self, max_browsers=3):
+    def __init__(self, browser_config: Optional[Dict[str, Dict[str, Any]]] = None):
         self._pools = {
-            "playwright": asyncio.Queue(max_browsers),
-            "aiohttp": asyncio.Queue(max_browsers)
+            "playwright": asyncio.Queue(),
+            "aiohttp": asyncio.Queue()
         }
+        self.config = browser_config or {}
 
     async def get_browser(self, browser_type: str):
         if self._pools[browser_type].empty():
-            browser = await BrowserFactory.create(browser_type, headless=True)
+            browser = await BrowserFactory.create(
+                browser_type,
+                **self.config.get(browser_type, {})
+            )
             return browser
         return await self._pools[browser_type].get()
 

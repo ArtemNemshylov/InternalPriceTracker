@@ -5,7 +5,8 @@ from playwright.async_api import async_playwright
 from src.browsers.base_browser import BaseBrowser
 
 class PlaywrightBrowser(BaseBrowser):
-    def __init__(self, headless: bool = True, timeout: int = 30000):
+    def __init__(self, headless: bool = True, timeout: int = 30000, **kwargs):
+        super().__init__(**kwargs)
         self.headless = headless
         self.timeout = timeout
         self._playwright = None

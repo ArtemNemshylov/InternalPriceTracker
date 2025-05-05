@@ -8,6 +8,8 @@ from src.parsers.base_parser import BaseParser
 
 
 class TotisPharmaParser(BaseParser):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
     @staticmethod
     async def fetch_name(soup):
         name = soup.find("h1", class_="site-main-title site-main-title--variant_product tt-space_mt tt-space_mt--5-till-xl ds-caption").text.strip()
@@ -49,7 +51,15 @@ class TotisPharmaParser(BaseParser):
 
 
 async def main():
-    parser = TotisPharmaParser()
+    parser = TotisPharmaParser(
+        browser_type="playwright",
+        browser_config={
+            "playwright": {
+                "headless": False,
+                "timeout": 45000
+            }
+        }
+    )
     try:
         urls = Path("links.txt").read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
