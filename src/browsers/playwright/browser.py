@@ -1,10 +1,12 @@
+import asyncio
 import json
 
 from playwright.async_api import async_playwright
 from src.browsers.base_browser import BaseBrowser
 
 class PlaywrightBrowser(BaseBrowser):
-    def __init__(self, headless: bool = True, timeout: int = 30000):
+    def __init__(self, headless: bool = True, timeout: int = 30000, **kwargs):
+        super().__init__(**kwargs)
         self.headless = headless
         self.timeout = timeout
         self._playwright = None
@@ -30,6 +32,7 @@ class PlaywrightBrowser(BaseBrowser):
     async def fetch_html(self, url: str) -> str:
         page = await self._context.new_page()
         await page.goto(url, timeout=self.timeout)
+        await asyncio.sleep(2)
         content = await page.content()
         await page.close()
         return content

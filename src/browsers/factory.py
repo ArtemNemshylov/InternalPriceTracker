@@ -12,4 +12,4 @@ class BrowserFactory:
             return browser
         elif browser_type == "aiohttp":
             return AiohttpBrowser(**kwargs)
-        raise ValueError(f"Unknown type: {browser_type}")
+        raise ValueError(f"Unknown browser type: {browser_type}")
