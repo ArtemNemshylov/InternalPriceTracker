@@ -10,7 +10,7 @@ class BrowserPool:
 
     async def get_browser(self, browser_type: str):
         if self._pools[browser_type].empty():
-            browser = await BrowserFactory.create(browser_type)
+            browser = await BrowserFactory.create(browser_type, headless=True)
             return browser
         return await self._pools[browser_type].get()
 
