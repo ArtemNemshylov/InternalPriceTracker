@@ -1,11 +1,6 @@
 import asyncio
 from pathlib import Path
 import re
-from typing import List
-
-from bs4 import BeautifulSoup
-
-from src.core.dto import ProductDTO
 from src.parsers.base_parser import BaseParser
 
 
