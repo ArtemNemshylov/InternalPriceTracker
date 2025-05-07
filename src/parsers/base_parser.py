@@ -2,7 +2,11 @@ from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any, List
 import logging
 from functools import wraps
+
+from bs4 import BeautifulSoup
+
 from src.browsers.pool import BrowserPool
+from src.core.dto import ProductDTO
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +34,33 @@ class BaseParser(ABC):
         self.headers = headers or {}
         self.browser_pool = BrowserPool(browser_config=browser_config or {})
 
+    @staticmethod
     @abstractmethod
-    @handle_parsing_errors
-    async def parse(self, url_list: List[str]) -> List[Any]:
+    async def fetch_availability(soup):
         pass
+
+    @staticmethod
+    @abstractmethod
+    async def fetch_article(soup):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    async def fetch_price(soup):
+        pass
+
+    @handle_parsing_errors
+    async def parse(self, url_list: List[str]) -> List[ProductDTO]:
+        products = []
+        for url in url_list:
+            html = await self.fetch_html(url)
+            soup = BeautifulSoup(html, "html.parser")
+            is_available = await self.fetch_availability(soup)
+            article = await self.fetch_article(soup)
+            price, discount = await self.fetch_price(soup)
+            product = ProductDTO(article=article, price=price, available=is_available, discount=discount)
+            products.append(product)
+        return products
 
     async def fetch_html(self, url: str) -> str:
         browser = await self.browser_pool.get_browser(self.browser_type)
@@ -44,3 +71,4 @@ class BaseParser(ABC):
 
     async def close(self):
         await self.browser_pool.shutdown()
+
