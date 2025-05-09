@@ -20,7 +20,7 @@ def handle_parsing_errors(func):
             raise
     return wrapper
 
-# src/parsers/base_parser.py
+
 class BaseParser(ABC):
     def __init__(
         self,
