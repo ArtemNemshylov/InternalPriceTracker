@@ -25,20 +25,21 @@ class LascosParser(BaseParser):
 
 
 async def main():
+    parser_dir = Path(__file__).resolve().parent
+    links_path = parser_dir / "links.txt"
     parser = LascosParser(
         browser_type="playwright",
         browser_config={
             "playwright": {
                 "headless": False,
-                "timeout": 4500
+                "timeout": 30000
             }
         }
     )
     try:
-        urls = Path("links.txt").read_text(encoding="utf-8").splitlines()
+        urls = links_path.read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
-        for product in products:
-            print(product.article, product.price, product.available, product.discount)
+        return products
     finally:
         await parser.close()
 
