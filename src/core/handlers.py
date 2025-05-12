@@ -13,7 +13,6 @@ async def handle_parse_links(cmd):
             "timeout": 4500
         }
     })
-
     try:
         urls = Path(cmd.links_path).read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
