@@ -20,7 +20,6 @@ class SesDermaParser(BaseParser):
 
     async def fetch_price(self, soup):
         price_container = soup.find("p", class_="price")
-        print(price_container)
         old_price_container = price_container.find("del")
         if old_price_container:
             old_price = old_price_container.find("bdi")
@@ -48,6 +47,8 @@ class SesDermaParser(BaseParser):
 
 
 async def main():
+    parser_dir = Path(__file__).resolve().parent
+    links_path = parser_dir / "links.txt"
     parser = SesDermaParser(
         browser_type="playwright",
         browser_config={
@@ -58,11 +59,9 @@ async def main():
         }
     )
     try:
-        urls = Path("links.txt").read_text(encoding="utf-8").splitlines()
+        urls = links_path.read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
-        for product in products:
-            print(product.article, product.price, product.available, product.discount) # так само заглушка
-
+        return products
     finally:
         await parser.close()
 

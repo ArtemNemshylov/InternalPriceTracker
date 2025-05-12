@@ -1,11 +1,13 @@
-from src.parsers.decaar.parser import DecaarParser
-from src.parsers.lascos.parser import LascosParser
-from src.parsers.pielcosmetics.parser import PielCosmeticsParser
-from src.parsers.sesderma.parser import SesDermaParser
+from src.parsers.decaar import parser as decaar
+from src.parsers.lascos import parser as lascos
+from src.parsers.pielcosmetics import parser as pielcosmetics
+from src.parsers.sesderma import parser as sesderma
+from src.parsers.totispharma import parser as totispharma
 
 PARSER_REGISTRY = {
-    "decaar": DecaarParser,
-    "lascos": LascosParser,
-    "pielcosmetics": PielCosmeticsParser,
-    "sesderma": SesDermaParser,
+    "decaar": decaar.main,
+    "lascos": lascos.main,
+    "pielcosmetics": pielcosmetics.main,
+    "sesderma": sesderma.main,
+    "totispharma": totispharma.main
 }

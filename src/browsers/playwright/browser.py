@@ -12,6 +12,7 @@ class PlaywrightBrowser(BaseBrowser):
         self._playwright = None
         self._browser = None
         self._context = None
+        self._page = None
 
     async def __aenter__(self):
         await self.launch()
@@ -28,6 +29,7 @@ class PlaywrightBrowser(BaseBrowser):
             args=["--no-sandbox"]
         )
         self._context = await self._browser.new_context()
+        self._page = await self._context.new_page()
 
     async def fetch_html(self, url: str) -> str:
         page = await self._context.new_page()
