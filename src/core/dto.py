@@ -6,3 +6,4 @@ class ProductDTO:
     price: float
     available: bool
     discount: int
+    url: str

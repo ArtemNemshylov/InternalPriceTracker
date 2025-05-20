@@ -12,14 +12,15 @@ class ExcelExporter:
         ws = wb.active
         ws.title = "Products"
 
-        ws.append(["Артикул", "Цена", "Наличие", "Скидка"])
+        ws.append(["Артикул", "Цена", "Наличие", "Скидка", "Ссылка"])
 
         for product in products:
             ws.append([
                 product.article,
                 product.price,
                 "В наличии" if product.available else "Не в наличии",
-                product.discount
+                product.discount,
+                product.url
             ])
 
         now = datetime.now()

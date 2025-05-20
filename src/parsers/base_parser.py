@@ -58,7 +58,7 @@ class BaseParser(ABC):
             is_available = await self.fetch_availability(soup)
             article = await self.fetch_article(soup)
             price, discount = await self.fetch_price(soup)
-            product = ProductDTO(article=article, price=price, available=is_available, discount=discount)
+            product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
             products.append(product)
         return products
 

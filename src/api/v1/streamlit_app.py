@@ -5,8 +5,9 @@ from datetime import datetime
 API_BASE_URL = "http://localhost:8000/parse"
 
 st.set_page_config(page_title="Парсери", page_icon="🕸️")
-st.title("🔍 Парсери")
+st.title("🔍 Менеджер парсерів")
 
+# 👉 Отримання списку парсерів
 parser_names = []
 with st.spinner("Завантаження парсерів..."):
     try:
@@ -46,35 +47,71 @@ if st.button("🔁 Запустити всі"):
         else:
             st.error(f"❌ Помилка: {response.status_code} - {response.text}")
 
-# 👉 Запуск одного парсера
-st.subheader("🎯 Запустити конкретний парсер")
+# 👉 Менеджер кожного парсера
+st.subheader("🧰 Керування парсерами")
 
-if parser_names:
-    selected_parser = st.selectbox("Оберіть парсер", parser_names)
+for parser_name in parser_names:
+    with st.expander(f"🔧 {parser_name}"):
+        key = f"editor_{parser_name}"
 
-    if st.button("▶️ Запустити обраний"):
-        with st.spinner("Парсинг..."):
-            response = requests.post(f"{API_BASE_URL}/", json={"parser": selected_parser})
-            if response.ok:
-                result = response.json()
-                st.success("✅ Парсер завершився")
-                st.json(result)
+        # ініціалізуємо session_state, якщо ще нема
+        if key not in st.session_state:
+            try:
+                r = requests.get(f"{API_BASE_URL}/links/{parser_name}")
+                if r.ok:
+                    st.session_state[key] = r.json().get("links", "")
+                else:
+                    st.session_state[key] = ""
+                    st.warning(f"⚠️ Не вдалося отримати links.txt для {parser_name}")
+            except Exception as e:
+                st.session_state[key] = ""
+                st.error(f"❌ Помилка запиту: {str(e)}")
 
-                if "excel" in result:
-                    filename = result["excel"].split("/")[-1]
-                    download_url = f"{API_BASE_URL}/download/{selected_parser}"
+        # редактор
+        edited_links = st.text_area(
+            label="URLʼи",
+            value=st.session_state[key],
+            height=200,
+            key=key
+        )
 
-                    download_response = requests.get(download_url)
-                    if download_response.ok:
-                        st.download_button(
-                            label="📥 Завантажити Excel (цей парсер)",
-                            data=download_response.content,
-                            file_name=filename,
-                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        )
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if st.button("💾 Зберегти", key=f"save_{parser_name}"):
+                try:
+                    save_resp = requests.post(
+                        f"{API_BASE_URL}/links/{parser_name}",
+                        json={"links": edited_links}
+                    )
+                    if save_resp.ok:
+                        st.success("✅ Збережено!")
                     else:
-                        st.warning("⚠️ Excel-файл не знайдено або ще не готовий.")
-            else:
-                st.error(f"❌ Помилка: {response.status_code} - {response.text}")
-else:
-    st.warning("⚠️ Немає доступних парсерів")
+                        st.error(f"❌ Помилка збереження: {save_resp.status_code}")
+                except Exception as e:
+                    st.error(f"❌ {str(e)}")
+
+        with col2:
+            if st.button("🚀 Запустити", key=f"run_{parser_name}"):
+                with st.spinner("Парсинг..."):
+                    run_resp = requests.post(f"{API_BASE_URL}/", json={"parser": parser_name})
+                    if run_resp.ok:
+                        result = run_resp.json()
+                        st.success("✅ Парсер завершився")
+                        st.json(result)
+
+                        if "excel" in result:
+                            filename = result["excel"].split("/")[-1]
+                            download_url = f"{API_BASE_URL}/download/{parser_name}"
+                            excel_resp = requests.get(download_url)
+                            if excel_resp.ok:
+                                st.download_button(
+                                    label="📥 Завантажити Excel",
+                                    data=excel_resp.content,
+                                    file_name=filename,
+                                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                )
+                            else:
+                                st.warning("⚠️ Excel-файл не знайдено або ще не готовий.")
+                    else:
+                        st.error(f"❌ Помилка запуску: {run_resp.status_code}")

@@ -9,7 +9,7 @@ class DecaarParser(BaseParser):
         price_container = soup.find("div", class_="info-buy")
         price = price_container.find("div", class_="price").text.strip()
         price = int(price.replace(' ', '').replace('грн', ''))
-        return price, 0  # немає товарів зі знижкою
+        return price, 0
 
     @staticmethod
     async def fetch_article(soup):
