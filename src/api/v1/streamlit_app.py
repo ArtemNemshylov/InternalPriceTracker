@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from datetime import datetime
 
-API_BASE_URL = "http://localhost:8000/parse"
+API_BASE_URL = "https://internalpricetrackerfastapi.onrender.com/parse"
 
 st.set_page_config(page_title="Парсери", page_icon="🕸️")
 st.title("🔍 Менеджер парсерів")
