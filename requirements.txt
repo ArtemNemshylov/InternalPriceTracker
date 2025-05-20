@@ -7,3 +7,4 @@ Requests==2.32.3
 starlette==0.46.2
 streamlit==1.45.0
 uvicorn==0.34.2
+playwright==1.51.0
