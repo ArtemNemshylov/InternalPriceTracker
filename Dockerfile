@@ -1,40 +1,36 @@
-# Базовий образ з Python
 FROM python:3.12-slim
 
-# Встановлення системних залежностей
+# Встановлюємо системні залежності для Playwright
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
     unzip \
-    fonts-liberation \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libgdk-pixbuf2.0-0 \
-    libnspr4 \
     libnss3 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libxss1 \
+    libasound2 \
+    libxshmfence1 \
+    libgbm1 \
     libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Встановлення Playwright
-RUN pip install --no-cache-dir playwright
+# Встановлюємо робочу директорію
+WORKDIR /app
 
-# Встановлення браузерів для Playwright
+# Копіюємо проект
+COPY . .
+
+# Встановлюємо Python-залежності
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt
+
+# Встановлюємо Playwright браузери
 RUN playwright install --with-deps
 
-# Копіювання вашого додатку в контейнер
-WORKDIR /app
-COPY . /app
-
-# Відкриття порту
+# Відкриваємо порт FastAPI
 EXPOSE 8000
 
-# Команда для запуску вашого додатку
+# Запуск FastAPI застосунку через src.main:app
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
