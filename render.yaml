@@ -1,11 +1,10 @@
 services:
   - type: web
-    name: internal-tracker
-    env: docker
+    name: internal-price-tracker
+    runtime: docker
     plan: free
     region: frankfurt
-    branch: nemsh
+    branch: main
+    autoDeploy: true
     dockerfilePath: ./Dockerfile
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
+    dockerContext: .
