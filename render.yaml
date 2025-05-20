@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: internal-tracker
+    env: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
