@@ -1,7 +1,12 @@
-FROM python:3.12-slim
+FROM mcr.microsoft.com/playwright:v1.50.0-noble
 
 WORKDIR /app
-COPY . /app
 
-RUN pip install --no-cache-dir fastapi uvicorn
-CMD ["python", "-c", "import fastapi; print('✅ FastAPI OK')"]
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8000
+
+# Старт FastAPI
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
