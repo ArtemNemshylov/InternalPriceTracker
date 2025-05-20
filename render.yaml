@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: internal-price-tracker
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: nemsh
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
