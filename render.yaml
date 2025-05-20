@@ -4,7 +4,7 @@ services:
     runtime: docker
     plan: free
     region: frankfurt
-    branch: nemsh
+    branch: main
     autoDeploy: true
     dockerfilePath: ./Dockerfile
     dockerContext: .
