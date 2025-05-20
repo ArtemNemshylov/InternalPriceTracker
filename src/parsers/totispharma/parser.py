@@ -36,20 +36,21 @@ class TotisPharmaParser(BaseParser):
 
 
 async def main():
+    parser_dir = Path(__file__).resolve().parent
+    links_path = parser_dir / "links.txt"
     parser = TotisPharmaParser(
         browser_type="playwright",
         browser_config={
             "playwright": {
                 "headless": True,
-                "timeout": 4500
+                "timeout": 30000
             }
         }
     )
     try:
-        urls = Path("links.txt").read_text(encoding="utf-8").splitlines()
-        products = await parser.parse(urls[:2])
-        for product in products:
-            print(product.article, product.price, product.available, product.discount) # заглушка, потом подумаем чо з єтой хуетой делать
+        urls = links_path.read_text(encoding="utf-8").splitlines()
+        products = await parser.parse(urls[:5])
+        return products
     finally:
         await parser.close()
 

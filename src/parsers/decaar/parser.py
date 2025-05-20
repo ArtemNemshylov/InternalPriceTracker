@@ -3,14 +3,13 @@ from pathlib import Path
 
 from src.parsers.base_parser import BaseParser
 
-
 class DecaarParser(BaseParser):
     @staticmethod
     async def fetch_price(soup):
         price_container = soup.find("div", class_="info-buy")
         price = price_container.find("div", class_="price").text.strip()
         price = int(price.replace(' ', '').replace('грн', ''))
-        return price, 0  # немає товарів зі знижкою
+        return price, 0
 
     @staticmethod
     async def fetch_article(soup):
@@ -23,20 +22,22 @@ class DecaarParser(BaseParser):
         return is_available
 
 async def main():
+    parser_dir = Path(__file__).resolve().parent
+    links_path = parser_dir / "links.txt"
+
     parser = DecaarParser(
         browser_type="playwright",
         browser_config={
             "playwright": {
                 "headless": True,
-                "timeout": 4500
+                "timeout": 30000
             }
         }
     )
     try:
-        urls = Path("links.txt").read_text(encoding="utf-8").splitlines()
+        urls = links_path.read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
-        for product in products:
-            print(product.article, product.price, product.available, product.discount)
+        return products
     finally:
         await parser.close()
 
