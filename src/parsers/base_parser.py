@@ -1,4 +1,3 @@
-import asyncio
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any, List
 import logging
@@ -51,40 +50,16 @@ class BaseParser(ABC):
         pass
 
     @handle_parsing_errors
-    async def parse(self, url_list: List[str], num_workers: int = 2) -> List[ProductDTO]:
-        chunk_size = max(1, len(url_list) // num_workers)
-        chunks = [url_list[i * chunk_size:(i + 1) * chunk_size] for i in range(num_workers)]
-        chunks.append(url_list[num_workers * chunk_size:])
-
-        tasks = [
-            self._parse_chunk(chunk, i)
-            for i, chunk in enumerate(chunks) if chunk
-        ]
-
-        results = await asyncio.gather(*tasks)
-
-        all_products = []
-        for part in results:
-            all_products.extend(part)
-
-        return all_products
-
-    async def _parse_chunk(self, urls: List[str], index: int) -> List[ProductDTO]:
+    async def parse(self, url_list: List[str]) -> List[ProductDTO]:
         products = []
-        browser = await self.browser_pool.get_browser(self.browser_type)
-        try:
-            for url in urls:
-                html = await browser.fetch_html(url)
-                soup = BeautifulSoup(html, "html.parser")
-                is_available = await self.fetch_availability(soup)
-                article = await self.fetch_article(soup)
-                price, discount = await self.fetch_price(soup)
-                product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
-                products.append(product)
-        except Exception as e:
-            logger.error(f"[Worker-{index}] Error: {e}")
-        finally:
-            await self.browser_pool.release(browser, self.browser_type)
+        for url in url_list:
+            html = await self.fetch_html(url)
+            soup = BeautifulSoup(html, "html.parser")
+            is_available = await self.fetch_availability(soup)
+            article = await self.fetch_article(soup)
+            price, discount = await self.fetch_price(soup)
+            product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
+            products.append(product)
         return products
 
     async def fetch_html(self, url: str) -> str:
