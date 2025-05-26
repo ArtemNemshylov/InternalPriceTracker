@@ -18,7 +18,7 @@ class YudinaParser(BaseParser):
             return 0, 0
 
     async def fetch_availability(self, soup):
-        if not soup.find("button", class_="single_add_to_cart_button button alt"):
+        if soup.find("button", class_="single_add_to_cart_button button alt"):
             return True
         return False
 
