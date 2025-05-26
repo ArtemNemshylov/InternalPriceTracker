@@ -7,21 +7,30 @@ from src.parsers.base_parser import BaseParser
 class LascosParser(BaseParser):
     @staticmethod
     async def fetch_article(soup):
-        article = soup.find("span", class_="p-model").text
-        return article
+        try:
+            article = soup.find("span", class_="p-model").text
+            return article
+        except Exception:
+            return ""
 
     @staticmethod
     async def fetch_availability(soup):
-        return True
+        try:
+            return True
+        except Exception:
+            return ""
 
     @staticmethod
     async def fetch_price(soup):
-        price = soup.find("li", class_="product-price price-styled")
-        if not price:
-            return 0, 0
-        price = price.text.strip()
-        price = int(price.replace(' ', '').replace('₴', ''))
-        return price, 0
+        try:
+            price = soup.find("li", class_="product-price price-styled")
+            if not price:
+                return "", 0
+            price = price.text.strip()
+            price = int(price.replace(' ', '').replace('₴', ''))
+            return price, 0
+        except Exception:
+            return "", 0
 
 
 async def main():
