@@ -28,6 +28,10 @@ if st.button("🔁 Запустити всі"):
         if response.ok:
             result = response.json()
             st.success("✅ Усі парсери завершилися")
+
+            if "execution_seconds" in result:
+                st.info(f"⏱️ Час виконання: {result['execution_seconds']} сек.")
+
             st.json(result)
 
             if "excel" in result:
@@ -98,6 +102,10 @@ for parser_name in parser_names:
                     if run_resp.ok:
                         result = run_resp.json()
                         st.success("✅ Парсер завершився")
+
+                        if "execution_seconds" in result:
+                            st.info(f"⏱️ Час виконання: {result['execution_seconds']} сек.")
+
                         st.json(result)
 
                         if "excel" in result:
