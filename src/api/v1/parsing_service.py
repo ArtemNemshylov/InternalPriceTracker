@@ -45,6 +45,24 @@ async def run_all_parsers():
         "details": results
     }
 
+async def run_one_parser(name: str):
+    if name not in PARSER_REGISTRY:
+        raise ValueError("Parser not found")
+
+    func = PARSER_REGISTRY[name]
+    products = await func()
+
+    if not products:
+        return {"status": "no products", "parser": name}
+
+    file_path = ExcelExporter.export(products, name, EXPORT_DIR)
+    return {
+        "status": "success",
+        "parser": name,
+        "products_count": len(products),
+        "excel": str(file_path.relative_to(PROJECT_ROOT))
+    }
+
 def get_excel_path(parser_name: str | None = None) -> Path:
     today = datetime.now()
     filename = f"{parser_name}_{today.year}_{today.month:02}_{today.day:02}.xlsx" if parser_name else \
