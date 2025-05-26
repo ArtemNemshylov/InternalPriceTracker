@@ -103,11 +103,12 @@ for parser_name in parser_names:
                         result = run_resp.json()
                         st.success("✅ Парсер завершився")
 
-                        if "execution_seconds" in result:
-                            st.info(f"⏱️ Час виконання: {result['execution_seconds']} сек.")
+                        st.json({
+                            **result,
+                            "⏱️ execution_seconds": result.get("execution_seconds", "—")
+                        })
 
-                        st.json(result)
-
+                        # Кнопка загрузки Excel
                         if "excel" in result:
                             filename = result["excel"].split("/")[-1]
                             download_url = f"{API_BASE_URL}/download/{parser_name}"
@@ -123,3 +124,4 @@ for parser_name in parser_names:
                                 st.warning("⚠️ Excel-файл не знайдено або ще не готовий.")
                     else:
                         st.error(f"❌ Помилка запуску: {run_resp.status_code}")
+
