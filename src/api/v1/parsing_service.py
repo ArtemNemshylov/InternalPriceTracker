@@ -11,6 +11,7 @@ EXPORT_DIR.mkdir(exist_ok=True)
 def get_parser_names():
     return list(PARSER_REGISTRY.keys())
 
+
 async def run_all_parsers():
     results = {}
     products = []
@@ -18,37 +19,29 @@ async def run_all_parsers():
     for name, main_func in PARSER_REGISTRY.items():
         try:
             parsed = await main_func()
+            if not isinstance(parsed, list):
+                results[name] = "invalid result (not a list)"
+                continue
+
             products.extend(parsed)
             results[name] = f"success ({len(parsed)} products)"
+
         except Exception as e:
+            tb = traceback.format_exc()
             results[name] = f"error: {str(e)}"
+            results[f"{name}_trace"] = tb
 
     filename_prefix = "all_parsers"
     today = datetime.now()
     file_path = ExcelExporter.export(products, filename_prefix, EXPORT_DIR)
 
-    results["products_count"] = len(products)
-    results["excel"] = str(file_path.relative_to(PROJECT_ROOT))
-    results["download_url"] = "/parse/download"
-
-    return results
-
-async def run_one_parser(name: str):
-    if name not in PARSER_REGISTRY:
-        raise ValueError("Parser not found")
-
-    func = PARSER_REGISTRY[name]
-    products = await func()
-
-    if not products:
-        return {"status": "no products", "parser": name}
-
-    file_path = ExcelExporter.export(products, name, EXPORT_DIR)
     return {
-        "status": "success",
-        "parser": name,
+        "status": "done",
+        "parsers_ran": list(PARSER_REGISTRY.keys()),
         "products_count": len(products),
-        "excel": str(file_path.relative_to(PROJECT_ROOT))
+        "excel": str(file_path.relative_to(PROJECT_ROOT)),
+        "download_url": "/parse/download",
+        "details": results
     }
 
 def get_excel_path(parser_name: str | None = None) -> Path:
