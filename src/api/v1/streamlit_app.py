@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from datetime import datetime
 
-API_BASE_URL = "https://chmurki.shop/api"
+API_BASE_URL = "https://chmurki.shop/api/parse"
 
 st.set_page_config(page_title="Парсери", page_icon="🕸️")
 st.title("🔍 Менеджер парсерів")
