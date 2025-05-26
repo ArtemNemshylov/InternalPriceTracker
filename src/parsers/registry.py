@@ -5,6 +5,7 @@ from src.parsers.sesderma import parser as sesderma
 from src.parsers.totispharma import parser as totispharma
 from src.parsers.christinacosmetics import parser as christinacosmetics
 from src.parsers.yudina import parser as yudina
+from src.parsers.jda import parser as jda
 
 PARSER_REGISTRY = {
     "decaar": decaar.main,
@@ -13,5 +14,6 @@ PARSER_REGISTRY = {
     "sesderma": sesderma.main,
     "totispharma": totispharma.main,
     "christinacosmetics": christinacosmetics.main,
-    "yudina": yudina.main
+    "yudina": yudina.main,
+    "jda": jda.main
 }
