@@ -11,33 +11,42 @@ class SesDermaParser(BaseParser):
 
     @staticmethod
     async def fetch_article(soup):
-        article = soup.find("span", class_="sku")
-        if article:
-            article = article.text.strip()
-            return article
-        return None
-
+        try:
+            article = soup.find("span", class_="sku")
+            if article:
+                return article.text.strip()
+        except Exception:
+            pass
+        return ""
 
     async def fetch_price(self, soup):
-        price_container = soup.find("p", class_="price")
-        old_price_container = price_container.find("del")
-        if old_price_container:
-            old_price = old_price_container.find("bdi")
-            price = price_container.find("ins").find("bdi")
-            if old_price and price:
-                old_price = self._parse_price_text(old_price.text.strip())
+        try:
+            price_container = soup.find("p", class_="price")
+            old_price_container = price_container.find("del")
+            if old_price_container:
+                old_price = old_price_container.find("bdi")
+                price = price_container.find("ins").find("bdi")
+                if old_price and price:
+                    old_price = self._parse_price_text(old_price.text.strip())
+                    price = self._parse_price_text(price.text.strip())
+                    discount = calculate_discount(old_price, price)
+                    return price, discount
+
+            price = price_container.find("bdi")
+            if price:
                 price = self._parse_price_text(price.text.strip())
-                discount = calculate_discount(old_price, price)
-                return price, discount
-        price = price_container.find("bdi")
-        if price:
-            price = self._parse_price_text(price.text.strip())
-            return price, 0
+                return price, 0
+        except Exception:
+            pass
+        return 0, 0
 
     @staticmethod
     async def fetch_availability(soup):
-        if soup.find("p", class_="stock out-of-stock"):
-            return False
+        try:
+            if soup.find("p", class_="stock out-of-stock"):
+                return False
+        except Exception:
+            pass
         return True
 
     @staticmethod
