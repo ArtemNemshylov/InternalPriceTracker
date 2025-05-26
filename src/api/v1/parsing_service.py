@@ -65,6 +65,7 @@ async def run_one_parser(name: str):
             "execution_seconds": duration
         }
 
+
     file_path = ExcelExporter.export(products, name, EXPORT_DIR)
     return {
         "status": "success",
