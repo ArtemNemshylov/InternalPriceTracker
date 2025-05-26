@@ -27,7 +27,7 @@ if st.button("🔁 Запустити всі"):
         response = requests.get(f"{API_BASE_URL}/")
         if response.ok:
             result = response.json()
-            st.success("✅ Усі парсери завершилися")
+            st.success("✅ Усі парсери завершилися ")
 
             if "execution_seconds" in result:
                 st.info(f"⏱️ Час виконання: {result['execution_seconds']} сек.")
