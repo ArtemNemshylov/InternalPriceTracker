@@ -39,7 +39,7 @@ async def main():
         browser_type="playwright",
         browser_config={
             "playwright": {
-                "headless": True,
+                "headless": False,
                 "timeout": 30000
             }
         }

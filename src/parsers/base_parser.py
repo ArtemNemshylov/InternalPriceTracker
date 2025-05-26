@@ -51,7 +51,7 @@ class BaseParser(ABC):
         pass
 
     @handle_parsing_errors
-    async def parse(self, url_list: List[str], num_workers: int = 8) -> List[ProductDTO]:
+    async def parse(self, url_list: List[str], num_workers: int = 2) -> List[ProductDTO]:
         chunk_size = max(1, len(url_list) // num_workers)
         chunks = [url_list[i * chunk_size:(i + 1) * chunk_size] for i in range(num_workers)]
         chunks.append(url_list[num_workers * chunk_size:])
