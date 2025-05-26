@@ -1,3 +1,4 @@
+import time
 import traceback
 from datetime import datetime
 from pathlib import Path
@@ -14,6 +15,7 @@ def get_parser_names():
 
 
 async def run_all_parsers():
+    start_time = time.monotonic()
     results = {}
     products = []
 
@@ -35,11 +37,13 @@ async def run_all_parsers():
     filename_prefix = "all_parsers"
     today = datetime.now()
     file_path = ExcelExporter.export(products, filename_prefix, EXPORT_DIR)
+    duration = round(time.monotonic() - start_time, 2)
 
     return {
         "status": "done",
         "parsers_ran": list(PARSER_REGISTRY.keys()),
         "products_count": len(products),
+        "execution_seconds": duration,
         "excel": str(file_path.relative_to(PROJECT_ROOT)),
         "download_url": "/parse/download",
         "details": results
@@ -49,17 +53,24 @@ async def run_one_parser(name: str):
     if name not in PARSER_REGISTRY:
         raise ValueError("Parser not found")
 
+    start_time = time.monotonic()
     func = PARSER_REGISTRY[name]
     products = await func()
+    duration = round(time.monotonic() - start_time, 2)
 
     if not products:
-        return {"status": "no products", "parser": name}
+        return {
+            "status": "no products",
+            "parser": name,
+            "execution_seconds": duration
+        }
 
     file_path = ExcelExporter.export(products, name, EXPORT_DIR)
     return {
         "status": "success",
         "parser": name,
         "products_count": len(products),
+        "execution_seconds": duration,
         "excel": str(file_path.relative_to(PROJECT_ROOT))
     }
 
