@@ -19,7 +19,7 @@ class DecaarParser(BaseParser):
         try:
             return soup.find("div", class_="info-data-model").text.split(':')[1].strip()
         except Exception:
-            return ""
+            return False
 
     @staticmethod
     async def fetch_availability(soup):
