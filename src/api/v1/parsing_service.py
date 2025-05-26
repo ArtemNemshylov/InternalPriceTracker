@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 from pathlib import Path
 from src.parsers.registry import PARSER_REGISTRY
