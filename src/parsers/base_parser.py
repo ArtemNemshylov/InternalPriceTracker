@@ -53,13 +53,20 @@ class BaseParser(ABC):
     async def parse(self, url_list: List[str]) -> List[ProductDTO]:
         products = []
         for url in url_list:
-            html = await self.fetch_html(url)
-            soup = BeautifulSoup(html, "html.parser")
-            is_available = await self.fetch_availability(soup)
-            article = await self.fetch_article(soup)
-            price, discount = await self.fetch_price(soup)
-            product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
-            products.append(product)
+            try:
+                html = await self.fetch_html(url)
+                soup = BeautifulSoup(html, "html.parser")
+                is_available = await self.fetch_availability(soup)
+                article = await self.fetch_article(soup)
+                price, discount = await self.fetch_price(soup)
+                product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
+                products.append(product)
+            except Exception:
+                is_available=False
+                price, discount = 0, 0
+                article = "parser_error"
+                product = ProductDTO(article=article, price=price, available=is_available, discount=discount, url=url)
+                products.append(product)
         return products
 
     async def fetch_html(self, url: str) -> str:
