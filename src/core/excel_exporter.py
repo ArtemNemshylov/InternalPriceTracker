@@ -18,7 +18,7 @@ class ExcelExporter:
             ws.append([
                 product.article,
                 product.price,
-                "В наличии" if product.available else "Не в наличии",
+                "В наличии" if product.available else "Нет в наличии",
                 product.discount,
                 product.url
             ])

@@ -28,8 +28,7 @@ class JDAParser(BaseParser):
     async def fetch_availability(self, soup):
         try:
             container = soup.find("div", class_="product-header__availability")
-            is_available = container.text.strip() == "В наявності"
-            return is_available
+            return True
         except Exception:
             return False
 
