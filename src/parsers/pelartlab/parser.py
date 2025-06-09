@@ -26,10 +26,10 @@ class PelartlabParser(BaseParser):
                 price_text = price_span.get_text(strip=True)
                 price = float(price_text.replace('₴', '').replace(',', '.').replace('\xa0', '').strip())
                 return price, 0
-            return 0, 1
+            return 0, 0
         except Exception as e:
             print(f"Error parsing price: {e}")
-            return 0, 1
+            return 0, 0
 
     @staticmethod
     async def fetch_availability(soup: BeautifulSoup) -> bool:

@@ -25,8 +25,10 @@ class ChristinaCosmeticsParser(BaseParser):
                 discount = int(round((old_price - main_price) / old_price * 100))
             else:
                 discount = 0
-
-            return int(main_price), discount
+            try:
+                return int(old_price), discount
+            except Exception:
+                return int(main_price), 0
         except Exception as e:
             return 0, 0
 

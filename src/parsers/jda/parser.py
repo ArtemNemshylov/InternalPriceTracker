@@ -18,7 +18,7 @@ class JDAParser(BaseParser):
                 old_price_text = old_price_div.text.strip().replace(" ", "").replace("грн", "")
                 old_price = int(old_price_text)
                 discount = 100 - round(price / old_price * 100)
-                return price, discount
+                return old_price, discount
 
             return price, 0
         except Exception:

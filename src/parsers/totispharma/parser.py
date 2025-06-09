@@ -47,7 +47,7 @@ class TotisPharmaParser(BaseParser):
                 )
                 price = price_tag.get("data-price") if price_tag else old_price
                 discount = 100 - (float(old_price) / float(price) * 100)
-                return int(float(price)), int(discount)
+                return int(float(old_price)), int(discount)
 
             price_tag = soup.find(
                 'p',
