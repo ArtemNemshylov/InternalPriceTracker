@@ -30,7 +30,7 @@ class SesDermaParser(BaseParser):
                     old_price = self._parse_price_text(old_price.text.strip())
                     price = self._parse_price_text(price.text.strip())
                     discount = calculate_discount(old_price, price)
-                    return price, discount
+                    return old_price, discount
 
             price = price_container.find("bdi")
             if price:
