@@ -45,8 +45,6 @@ async def main():
     try:
         urls = links_path.read_text(encoding="utf-8").splitlines()
         products = await parser.parse(urls)
-        for product in products:
-            print(product.article, product.price, product.available, product.discount)
         return products
     finally:
         await parser.close()

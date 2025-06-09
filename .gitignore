@@ -151,3 +151,7 @@ backup.dump.gz
 /chroma
 .instructions
 nginx/certs/
+**/links.txt
+
+src/exports/
+*.xlsx
