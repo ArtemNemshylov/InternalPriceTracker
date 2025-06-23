@@ -45,13 +45,15 @@ class ResenssParser(BaseParser):
             price_element = soup.select_one('.money-resens')
             if price_element:
                 price_text = price_element.get_text(strip=True)
-                # Check if price is in EUR or UAH
+                price_text = price_text.replace(',', '')
+
                 if '€' in price_text:
                     price_eur = float(price_text.replace('€', '').strip())
                     price_uah = round(price_eur * self.euro_rate, 2)
+                    return price_uah, price_eur
                 else:
                     price_uah = float(price_text.replace('₴', '').strip())
-                return price_uah, 0
+                    return price_uah, 0
             return 0, 0
         except Exception as e:
             print(f"Error parsing price: {e}")
@@ -60,7 +62,6 @@ class ResenssParser(BaseParser):
     @staticmethod
     async def fetch_article(soup: BeautifulSoup) -> str:
         try:
-            # Find div with class text-link-animated and get its first p tag
             article_div = soup.find('div', class_='text-link-animated')
             if article_div:
                 article_p = article_div.find('p')
