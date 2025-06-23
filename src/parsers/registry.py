@@ -11,6 +11,8 @@ from src.parsers.esthederm import parser as esthederm
 from src.parsers.thalgo import parser as thalgo
 from src.parsers.resenss import parser as resenss
 from src.parsers.pelartlab import parser as pelartlab
+from src.parsers.esseskincare import parser as esseskincare
+
 
 PARSER_REGISTRY = {
     "decaar": decaar.main,
@@ -25,5 +27,6 @@ PARSER_REGISTRY = {
     "esthederm": esthederm.main,
     "thalgo": thalgo.main,
     "resenss": resenss.main,
-    "pelartlab": pelartlab.main
+    "pelartlab": pelartlab.main,
+    "esseskincare": esseskincare.main
 }
